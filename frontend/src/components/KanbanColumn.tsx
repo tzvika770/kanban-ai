@@ -8,17 +8,27 @@ import { NewCardForm } from "@/components/NewCardForm";
 type KanbanColumnProps = {
   column: Column;
   cards: Card[];
+  columnIndex: number;
+  columnCount: number;
   onRename: (columnId: string, title: string) => void;
+  onCommitRename: (columnId: string, title: string) => void;
   onAddCard: (columnId: string, title: string, details: string) => void;
+  onEditCard: (cardId: string, title: string, details: string) => void;
   onDeleteCard: (columnId: string, cardId: string) => void;
+  onMoveCard: (cardId: string, fromColumnId: string, direction: number) => void;
 };
 
 export const KanbanColumn = ({
   column,
   cards,
+  columnIndex,
+  columnCount,
   onRename,
+  onCommitRename,
   onAddCard,
+  onEditCard,
   onDeleteCard,
+  onMoveCard,
 }: KanbanColumnProps) => {
   const { setNodeRef, isOver } = useDroppable({ id: column.id });
 
@@ -26,7 +36,7 @@ export const KanbanColumn = ({
     <section
       ref={setNodeRef}
       className={clsx(
-        "flex min-h-[520px] flex-col rounded-3xl border border-[var(--stroke)] bg-[var(--surface-strong)] p-4 shadow-[var(--shadow)] transition",
+        "flex min-h-[520px] w-[300px] shrink-0 flex-col rounded-3xl border border-[var(--stroke)] bg-[var(--surface-strong)] p-4 shadow-[var(--shadow)] transition",
         isOver && "ring-2 ring-[var(--accent-yellow)]"
       )}
       data-testid={`column-${column.id}`}
@@ -42,6 +52,7 @@ export const KanbanColumn = ({
           <input
             value={column.title}
             onChange={(event) => onRename(column.id, event.target.value)}
+            onBlur={(event) => onCommitRename(column.id, event.target.value)}
             className="mt-3 w-full bg-transparent font-display text-lg font-semibold text-[var(--navy-dark)] outline-none"
             aria-label="Column title"
           />
@@ -53,7 +64,18 @@ export const KanbanColumn = ({
             <KanbanCard
               key={card.id}
               card={card}
+              onEdit={onEditCard}
               onDelete={(cardId) => onDeleteCard(column.id, cardId)}
+              onMoveLeft={
+                columnIndex > 0
+                  ? () => onMoveCard(card.id, column.id, -1)
+                  : undefined
+              }
+              onMoveRight={
+                columnIndex < columnCount - 1
+                  ? () => onMoveCard(card.id, column.id, 1)
+                  : undefined
+              }
             />
           ))}
         </SortableContext>

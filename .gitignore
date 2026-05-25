@@ -174,3 +174,8 @@ cython_debug/
 
 .DS_Store
 
+
+
+# Project-specific: runtime DB and generated frontend build
+backend/data/
+backend/static/
