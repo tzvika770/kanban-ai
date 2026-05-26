@@ -176,6 +176,7 @@ cython_debug/
 
 
 
-# Project-specific: runtime DB and generated frontend build
+# Project-specific: runtime database (never commit the SQLite file)
 backend/data/
-backend/static/
+# Note: backend/static/ (the built frontend) IS committed so the Docker image
+# builds from a clean clone, since the Dockerfile copies it and does not build it.
