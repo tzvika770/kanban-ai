@@ -146,15 +146,18 @@ Onboarding depends on `AGENTS.md`/`CLAUDE.md`/`docs`.
 
 ## Prioritized action checklist
 
-1. [ ] (H1) Empty out `backend/app/__init__.py`; single `Base` in `database.py`.
-2. [ ] (H2) Make `Dockerfile` multi-stage (build frontend) or commit `backend/static/`; ensure clean-clone build works.
-3. [ ] (M1) Fix CORS: drop wildcard+credentials; scope or remove.
-4. [ ] (M2) Require `SECRET_KEY` outside dev (fail fast / warn).
-5. [ ] (M3) Remove or adopt `lib/auth.ts` (one auth source).
-6. [ ] (M4) Honor `DATABASE_URL` (or remove it from config).
-7. [ ] (M5) Reconcile optimistic temp ids with server ids in `handleAddCard`.
-8. [ ] (M6) Add `unique=True` to `KanbanBoard.user_id`.
-9. [ ] (L1) Remove emoji prints / switch to logging.
+> **Status (updated 2026-05-25):** H1, H2, M1–M6, and L1 are resolved and verified
+> (25/25 tests pass). Remaining items below are Low/Nit.
+
+1. [x] (H1) Empty out `backend/app/__init__.py`; single `Base` in `database.py`.
+2. [x] (H2) Track `backend/static/` so the image builds from a clean clone.
+3. [x] (M1) Fix CORS: dropped credentials, scoped origins to localhost dev.
+4. [x] (M2) Warn when `SECRET_KEY` is unset (insecure default).
+5. [x] (M3) Removed dead `lib/auth.ts`.
+6. [x] (M4) Honor `DATABASE_URL` (resolved in `config.py`).
+7. [x] (M5) Reconcile optimistic temp ids with server ids in `handleAddCard`.
+8. [x] (M6) Added `unique=True` to `KanbanBoard.user_id`.
+9. [x] (L1) Removed emoji prints.
 10. [ ] (L2, L3) Remove unused `AIMessage` and password helpers.
 11. [ ] (L4) Stop leaking exception text from the AI routes.
 12. [ ] (L5) Move import-time side effects into `lifespan`.

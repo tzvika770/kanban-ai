@@ -71,8 +71,14 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 export const fetchBoard = async (): Promise<BoardData> =>
   mapBoard(await request<WireBoard>("/kanban"));
 
-export const createCard = (columnId: string, title: string, details: string) =>
-  request("/cards", {
+// Returns the created card (with its real server id) so the caller can swap
+// out the optimistic temporary id.
+export const createCard = async (
+  columnId: string,
+  title: string,
+  details: string
+): Promise<Card> => {
+  const c = await request<WireCard>("/cards", {
     method: "POST",
     body: JSON.stringify({
       column_id: numericId(columnId),
@@ -80,6 +86,8 @@ export const createCard = (columnId: string, title: string, details: string) =>
       description: details,
     }),
   });
+  return { id: cardDomId(c.id), title: c.title, details: c.description ?? "" };
+};
 
 type CardUpdate = {
   title?: string;

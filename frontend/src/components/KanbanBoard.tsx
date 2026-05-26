@@ -90,21 +90,37 @@ export const KanbanBoard = () => {
   };
 
   const handleAddCard = (columnId: string, title: string, details: string) => {
-    const id = createId("card");
+    const tempId = createId("card");
     setBoard((prev) => ({
       ...prev,
-      cards: {
-        ...prev.cards,
-        [id]: { id, title, details: details || "No details yet." },
-      },
+      cards: { ...prev.cards, [tempId]: { id: tempId, title, details } },
       columns: prev.columns.map((column) =>
         column.id === columnId
-          ? { ...column, cardIds: [...column.cardIds, id] }
+          ? { ...column, cardIds: [...column.cardIds, tempId] }
           : column
       ),
     }));
-    // Reload to swap the temporary id for the server-assigned one.
-    createCard(columnId, title, details).then(reload).catch(reload);
+    // Swap the temporary id for the real server id once the card is created,
+    // so subsequent edits/moves target a valid id (no full board reload).
+    createCard(columnId, title, details)
+      .then((saved) => {
+        setBoard((prev) => {
+          const cards = { ...prev.cards };
+          delete cards[tempId];
+          cards[saved.id] = saved;
+          return {
+            ...prev,
+            cards,
+            columns: prev.columns.map((column) => ({
+              ...column,
+              cardIds: column.cardIds.map((id) =>
+                id === tempId ? saved.id : id
+              ),
+            })),
+          };
+        });
+      })
+      .catch(reload);
   };
 
   // Move a card to the previous/next column (direction -1 / +1), appended to

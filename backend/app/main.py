@@ -21,10 +21,10 @@ init_db()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    print("🚀 Server starting...")
+    print("Server starting...")
     yield
     # Shutdown
-    print("🛑 Server stopping...")
+    print("Server stopping...")
 
 
 # Create FastAPI app
@@ -35,11 +35,12 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS middleware for local development (all origins allowed)
+# The frontend is served same-origin in production, so CORS is only needed for
+# the optional Next.js dev server. Scope to localhost and do not allow
+# credentials (the app authenticates with a Bearer token, not cookies).
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
     allow_methods=["*"],
     allow_headers=["*"],
 )

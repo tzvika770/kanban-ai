@@ -20,7 +20,7 @@ class KanbanBoard(Base):
     __tablename__ = "kanban_boards"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, nullable=False, index=True)
+    user_id = Column(Integer, nullable=False, unique=True, index=True)
     title = Column(String(100), nullable=False, default="My Board")
     created_at = Column(DateTime, server_default=func.now())
 
