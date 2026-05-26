@@ -7,14 +7,11 @@ export default defineConfig({
     timeout: 10_000,
   },
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    // E2E runs against the full integrated app (FastAPI serving the Next.js
+    // export plus the API). Start it first from the repo root:
+    //   docker compose up -d
+    baseURL: "http://127.0.0.1:8000",
     trace: "retain-on-failure",
-  },
-  webServer: {
-    command: "npm run dev -- --hostname 127.0.0.1 --port 3000",
-    url: "http://127.0.0.1:3000",
-    reuseExistingServer: true,
-    timeout: 120_000,
   },
   projects: [
     {
